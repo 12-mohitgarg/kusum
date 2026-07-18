@@ -1,0 +1,677 @@
+/* Hero Banner slider layouts */
+.hero {
+  position: relative;
+  height: 90vh;
+  min-height: 650px;
+  background-color: var(--color-primary-dark);
+  color: var(--color-text-light);
+  overflow: hidden;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.hero-slide::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(15, 30, 13, 0.75) 40%, rgba(20, 40, 18, 0.35) 100%);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 800px;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: var(--color-accent);
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: 4.8rem;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  font-weight: 700;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.hero-text {
+  font-size: 1.25rem;
+  color: #e4ede6;
+  margin-bottom: 40px;
+  line-height: 1.7;
+  max-width: 700px;
+}
+
+.hero-btn-group {
+  display: flex;
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .hero {
+    height: 85vh;
+    min-height: 580px;
+  }
+  .hero-title {
+    font-size: 3.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: 85vh;
+  }
+  .hero-title {
+    font-size: 3rem;
+  }
+  .hero-text {
+    font-size: 1.1rem;
+  }
+}
+
+/* Trust Badges Grid */
+.badges-section {
+  background-color: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: 40px 0;
+}
+
+.badges-grid {
+  display: flex;
+  justify-content: space-around;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.badge-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 250px;
+}
+
+.badge-icon-wrapper {
+  background-color: #ffffff;
+  color: var(--color-primary);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.badge-item-title {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+.badge-item-desc {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+/* Vedic Bilona Process Showcase */
+.process-section {
+  background-color: #ffffff;
+}
+
+.section-tag {
+  text-align: center;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-accent-dark);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.3rem;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.section-subtitle {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 56px;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+}
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.process-card {
+  background-color: var(--color-bg-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 30px 24px;
+  text-align: center;
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.process-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-accent);
+}
+
+.process-step-num {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-primary);
+  color: var(--color-accent);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+}
+
+.process-icon {
+  font-size: 36px;
+  margin-bottom: 18px;
+}
+
+.process-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+}
+
+.process-card-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 992px) {
+  .process-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .process-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Reviews Testimonial Slider */
+.reviews-section {
+  background-color: var(--color-bg-base);
+}
+
+.reviews-carousel {
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.review-slide {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.review-stars {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  color: #ffb100;
+  margin-bottom: 24px;
+}
+
+.review-comment {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--color-primary);
+  line-height: 1.6;
+  font-style: italic;
+  margin-bottom: 24px;
+}
+
+.review-author {
+  font-weight: 600;
+  color: var(--color-text-main);
+  font-size: 1rem;
+}
+
+.review-role {
+  font-size: 0.8rem;
+  color: var(--color-accent-dark);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-border);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.carousel-dot.active {
+  background-color: var(--color-primary);
+}
+
+/* FAQ Accordion Styling */
+.faq-section {
+  background-color: #ffffff;
+}
+
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--color-bg-base);
+  transition: all var(--transition-fast);
+}
+
+.faq-question-btn {
+  width: 100%;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: left;
+}
+
+.faq-question-btn:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.faq-answer {
+  padding: 0 24px 20px;
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  border-top: 1px solid transparent;
+  display: none;
+}
+
+.faq-item.open .faq-answer {
+  display: block;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.3s ease;
+}
+
+.faq-icon-arrow {
+  transition: transform 0.2s;
+  color: var(--color-accent-dark);
+}
+
+.faq-item.open .faq-icon-arrow {
+  transform: rotate(180deg);
+}
+
+/* Premium Fresh Dairy Delights Banner Section */
+.dairy-promo-section {
+  background-color: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dairy-promo-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.3fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.dairy-promo-image-wrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 4 / 3;
+}
+
+.dairy-promo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.dairy-promo-image-wrapper:hover .dairy-promo-img {
+  transform: scale(1.05);
+}
+
+.dairy-promo-badge {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+  z-index: 5;
+}
+
+.dairy-promo-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dairy-promo-text {
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 30px;
+}
+
+.dairy-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dairy-feature-item {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.dairy-feature-icon {
+  background-color: #ffffff;
+  color: var(--color-accent-dark);
+  font-size: 1.2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.dairy-feature-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+.dairy-feature-desc {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 992px) {
+  .dairy-promo-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+/* Bulk & Wholesale Section styles */
+.bulk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  box-shadow: var(--shadow-lg);
+  background-color: var(--color-bg-card);
+}
+
+@media (max-width: 768px) {
+  .bulk-grid {
+    grid-template-columns: 1fr;
+  }
+  .bulk-info, .bulk-form-wrapper {
+    padding: 30px 20px !important;
+  }
+  .form-row-2 {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* Brand Comparison Table Styles */
+.comparison-table-wrapper {
+  box-shadow: var(--shadow-md);
+  background-color: var(--color-bg-card);
+}
+
+.comparison-table th {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.88rem;
+  letter-spacing: 1px;
+}
+
+.comparison-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.comparison-table tbody tr:hover {
+  background-color: rgba(197, 168, 109, 0.05); /* soft gold hover tint */
+}
+
+/* Interactive Dashboard & Calculator Styles */
+.dashboard-card {
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-accent) !important;
+}
+
+@media (max-width: 992px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px;
+  }
+}
+
+/* Trust Accreditations Strip Styles */
+.trust-accreditations-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  margin-bottom: 40px;
+}
+
+.accreditation-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-primary-dark);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.accreditation-svg {
+  color: var(--color-accent-dark);
+}
+
+/* Recipes Showcase styles */
+.recipe-card {
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.recipe-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-accent) !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes animate-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-bounce {
+  animation: animate-bounce 2s infinite ease-in-out;
+}
+
+/* Honey & Oils Promo Grid Styling */
+.honey-oils-promo-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .honey-oils-promo-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px;
+  }
+}
+
+/* Home Category Tabs Hover Styling */
+.home-category-tabs .category-tab {
+  transition: all var(--transition-fast) ease;
+}
+
+.home-category-tabs .category-tab:hover {
+  border-color: var(--color-primary) !important;
+  background-color: rgba(35, 63, 31, 0.05) !important;
+}
+
+.home-category-tabs .category-tab.active:hover {
+  background-color: var(--color-primary-dark) !important;
+  color: #ffffff !important;
+}
+
+/* Earthenware Grid Layouts */
+.earthenware-highlights .grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .earthenware-highlights .grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 32px;
+  }
+}
+
+/* Split Two-Column Hero Slider Styles */
+@media (max-width: 900px) {
+  .hero-slide-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    text-align: center;
+  }
+  .hero-slide-content {
+    align-items: center;
+  }
+  .hero-slide-features {
+    align-items: flex-start;
+  }
+  .hero-slide-image-wrapper img {
+    height: 300px !important;
+  }
+  .hero-slide-badge {
+    left: 20px !important;
+  }
+  .hero-btn-group {
+    justify-content: center;
+  }
+}
+

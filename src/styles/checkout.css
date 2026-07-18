@@ -1,0 +1,216 @@
+.checkout-page {
+  padding: 60px 0 100px;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.checkout-card {
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+.checkout-section-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  color: var(--color-primary);
+  margin-bottom: 24px;
+  border-bottom: 1.5px solid var(--color-border);
+  padding-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Form Styles */
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Payment Methods */
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.payment-method-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.payment-method-option.selected {
+  border-color: var(--color-accent-dark);
+  background-color: var(--color-bg-secondary);
+}
+
+.payment-option-title {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 0.95rem;
+}
+
+.payment-option-desc {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Order Summary */
+.order-summary-card {
+  position: sticky;
+  top: 100px;
+}
+
+.summary-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.summary-item-img {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  object-fit: cover;
+}
+
+.summary-item-info {
+  flex: 1;
+}
+
+.summary-item-name {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.summary-item-meta {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.summary-item-price {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Coupons Section */
+.coupon-input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 24px;
+}
+
+.coupon-btn {
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.coupon-btn:hover {
+  background-color: var(--color-primary-light);
+}
+
+.applied-coupon-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(45, 122, 49, 0.1);
+  color: var(--color-success);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: -12px;
+  margin-bottom: 16px;
+}
+
+/* Success Overlay */
+.success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-bg-base);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlayFadeIn 0.5s ease forwards;
+}
+
+.success-card {
+  max-width: 500px;
+  text-align: center;
+  padding: 40px;
+  border-radius: var(--radius-xl);
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  animation: fadeIn 0.6s ease forwards;
+}
+
+.success-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background-color: rgba(45, 122, 49, 0.1);
+  color: var(--color-success);
+  border-radius: 50%;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Auth Gate checkout panel styles */
+@media (max-width: 768px) {
+  .auth-gate-wrapper {
+    grid-template-columns: 1fr !important;
+  }
+  .auth-gate-info-panel {
+    padding: 30px 24px !important;
+  }
+  .auth-gate-form-panel {
+    padding: 30px 24px !important;
+  }
+}

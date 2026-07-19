@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, User, Menu, X, ShieldAlert, Search } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -18,21 +18,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle }) => {
   // Search input state
   const [searchVal, setSearchVal] = useState('');
 
-  // Dynamic Ticker Announcement State
-  const [activeAnnounceIdx, setActiveAnnounceIdx] = useState(0);
-  const ANNOUNCEMENTS = [
-    "🌾 Traditional Vedic Bilona A2 Ghee - Cultured from Curd, Slow Cooked in Clay Pots 🌾",
-    "🚚 Free Delivery on all Orders above ₹999 Across India! 🚚",
-    "🛡️ 100% Lab Certified Pure Organic - Check Purity Reports Below 🛡️"
-  ];
-
-  useEffect(() => {
-    const announceInterval = setInterval(() => {
-      setActiveAnnounceIdx((prev) => (prev + 1) % ANNOUNCEMENTS.length);
-    }, 4500);
-    return () => clearInterval(announceInterval);
-  }, []);
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -45,8 +30,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle }) => {
   return (
     <div className="header-container">
       {/* Announcement Bar */}
-      <div className="announcement-bar" style={{ transition: 'all 0.5s ease', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {ANNOUNCEMENTS[activeAnnounceIdx]}
+      <div className="announcement-bar-container">
+        <div className="scrolling-announcement">
+          <span>🚚 Free Delivery on all Orders above ₹999 Across India! 🚚 &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; 🌾 Traditional Vedic Bilona A2 Ghee - Cultured from Curd, Slow Cooked in Clay Pots 🌾 &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; 🛡️ 100% Lab Certified Pure Organic - Check Purity Reports Below 🛡️ &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>🚚 Free Delivery on all Orders above ₹999 Across India! 🚚 &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; 🌾 Traditional Vedic Bilona A2 Ghee - Cultured from Curd, Slow Cooked in Clay Pots 🌾 &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; 🛡️ 100% Lab Certified Pure Organic - Check Purity Reports Below 🛡️ &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
       </div>
 
       {/* Main Navbar */}

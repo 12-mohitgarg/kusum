@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Award, Heart, Flame } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Award, Heart, Flame, User, Lock, Mail, UserPlus } from 'lucide-react';
 import { getProducts, type Product } from '../services/db';
 import { ProductCard } from '../components/ProductCard';
 import { useToast } from '../components/Toast';
+import { useAuth } from '../context/AuthContext';
 import '../styles/hero.css';
 
 const TESTIMONIALS = [
@@ -56,16 +57,24 @@ const HERO_SLIDES = [
 
 const FAQ_ITEMS = [
   {
-    q: "What makes Bilona Churned Ghee different from normal Ghee?",
-    a: "Normal ghee is prepared by boiling milk cream (malai) directly. Amrit Bhoomi A2 Ghee is prepared using the Vedic Bilona method: raw A2 cow milk is boiled, turned to curd, churned with a bi-directional wooden churner to collect white butter (makkhan), and then slow-heated in clay pots. This locks in vitamins, antioxidants, and a premium granular texture."
+    q: "What is A2 Ghee and how is it different from regular ghee?",
+    a: "Regular commercial ghee is made from cream (malai) of mixed breed cows using machines. A2 Ghee is prepared exclusively from the milk of native Indian cows (like Gir or Sahiwal) that produce only the A2 beta-casein protein, which is much easier on the human digestive tract."
   },
   {
-    q: "What are the benefits of wood-pressed unrefined oils?",
-    a: "Modern refined oils are extracted using heat and chemicals, destroying fatty acids. Our oils are cold wood-pressed at low speeds (Kachi Ghani) in wooden mills below 40°C, preserving active vitamins, minerals, and rich natural flavors."
+    q: "What is Desi Cow Bilona Ghee?",
+    a: "Desi Cow Bilona Ghee is made using the traditional Vedic method. The A2 milk is boiled, naturally cultured into curd, and then churned with a bi-directional wooden bilona to separate butter (makkhan). This butter is then slow-cooked in clay pots over cow dung or wood fire to produce pure, granular, and aromatic golden ghee."
   },
   {
-    q: "Is your honey unpasteurized?",
-    a: "Yes. Our raw Himalayan honey is collected straight from the honeycomb, filtered through simple mesh to extract beeswax, and bottled directly. It is never pasteurized, heated, or blended with sugar syrups."
+    q: "Why is Buffalo Bilona Ghee considered a good choice?",
+    a: "Buffalo Bilona Ghee is rich in calcium, phosphorus, magnesium, and healthy fats. Prepared using traditional bilona curd-churning methods, it offers a creamy, delicious flavor profile, helps build muscle mass, improves sleep, and is perfect for children's healthy development."
+  },
+  {
+    q: "What are the benefits of using Kachi Ghani Black Mustard Oil?",
+    a: "Kachi Ghani Black Mustard Oil is cold-pressed in traditional wooden Kolhus from premium black mustard seeds. It retains all natural monounsaturated fatty acids (MUFA), natural aroma, and sharp pungency. It is a powerful immunity booster, excellent for cardiovascular health, and acts as a natural food preservative."
+  },
+  {
+    q: "What are the health benefits of A2 Ghee?",
+    a: "A2 Ghee is rich in short-chain fatty acids like butyric acid, which improves gut health, heals digestive tracts, boosts immunity, enhances brain focus, lubricates joints, nourishes skin, and possesses a high smoke point making it perfect for cooking."
   }
 ];
 
@@ -165,22 +174,69 @@ export const Home: React.FC = () => {
     return () => clearInterval(slideInterval);
   }, []);
 
-  // Promo Coupon Modal state
-  const [isPromoOpen, setIsPromoOpen] = useState(false);
+  // Auth popup & context
+  const { user, login, register } = useAuth();
+  const [isAuthPopupOpen, setIsAuthPopupOpen] = useState(false);
+  const [authTab, setAuthTab] = useState<'login' | 'register'>('login');
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authName, setAuthName] = useState('');
+  const [authSubmitting, setAuthSubmitting] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const dismissed = sessionStorage.getItem('amritbhoomi_promo_dismissed');
-      if (!dismissed) {
-        setIsPromoOpen(true);
+      const dismissed = sessionStorage.getItem('amritbhoomi_auth_popup_dismissed');
+      if (!dismissed && !user) {
+        setIsAuthPopupOpen(true);
       }
     }, 4000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [user]);
 
-  const dismissPromo = () => {
-    setIsPromoOpen(false);
-    sessionStorage.setItem('amritbhoomi_promo_dismissed', 'true');
+  const dismissAuthPopup = () => {
+    setIsAuthPopupOpen(false);
+    sessionStorage.setItem('amritbhoomi_auth_popup_dismissed', 'true');
+  };
+
+  const handleAuthLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!authEmail || !authPassword) {
+      showToast("Please enter your credentials.", "error");
+      return;
+    }
+    setAuthSubmitting(true);
+    try {
+      await login(authEmail, authPassword);
+      showToast("Welcome back to Amrit Bhoomi! 🌾", "success");
+      setIsAuthPopupOpen(false);
+      setAuthEmail('');
+      setAuthPassword('');
+    } catch (err: any) {
+      showToast(err.message || "Invalid email or password.", "error");
+    } finally {
+      setAuthSubmitting(false);
+    }
+  };
+
+  const handleAuthRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!authEmail || !authPassword || !authName) {
+      showToast("Please fill in all registration fields.", "error");
+      return;
+    }
+    setAuthSubmitting(true);
+    try {
+      await register(authEmail, authPassword, authName);
+      showToast("Registration successful! Welcome to the farm family. 🌾", "success");
+      setIsAuthPopupOpen(false);
+      setAuthEmail('');
+      setAuthPassword('');
+      setAuthName('');
+    } catch (err: any) {
+      showToast(err.message || "Registration failed.", "error");
+    } finally {
+      setAuthSubmitting(false);
+    }
   };
 
   const [homeTab, setHomeTab] = useState<'all' | 'ghee' | 'oils' | 'dairy' | 'honey' | 'pickles'>('all');
@@ -190,7 +246,8 @@ export const Home: React.FC = () => {
     const fetchHomeProducts = async () => {
       try {
         const prods = await getProducts();
-        setFeaturedProducts(prods.filter(p => p.featured));
+        const featured = prods.filter(p => p.featured);
+        setFeaturedProducts(featured.length >= 3 ? featured.slice(0, 6) : prods.slice(0, 6));
         setAllProducts(prods);
       } catch (e) {
         console.error("Failed to load products", e);
@@ -543,48 +600,74 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Vedic Bilona Process Showcase */}
-      <section id="bilona-process" className="section process-section">
+      {/* Vedic Bilona Process Showcase (Premium Timeline layout) */}
+      <section id="bilona-process" className="section process-section" style={{ background: '#fdfcf8', padding: '80px 0', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
         <div className="container">
-          <span className="section-tag">How It Is Made</span>
-          <h2 className="section-title">The Vedic Bilona Process</h2>
-          <p className="section-subtitle">Revisited from the ancient shastras, we churn our ghee from curd, not malai (cream), using wooden churners in the early morning.</p>
-
-          <div className="process-grid">
-            <div className="process-card">
-              <span className="process-step-num">1</span>
-              <div className="process-icon">🥛</div>
-              <h3 className="process-card-title">A2 Milk to Curd</h3>
-              <p className="process-card-desc">
-                Raw A2 milk from grass-fed native Gir cows is boiled and naturally cultured overnight into thick, nutritious curd.
-              </p>
+          <div className="journey-layout">
+            {/* Left Column: Heading and Birds Graphic */}
+            <div className="journey-left">
+              <span className="section-tag" style={{ margin: 0 }}>How It Is Made</span>
+              <h2 className="journey-title" style={{ margin: '8px 0 0 0' }}>The Traditional Journey Of Our Ghee</h2>
+              <img src="/journey_birds.png" alt="Traditional Journey of our Ghee" className="journey-birds-img" />
             </div>
 
-            <div className="process-card">
-              <span className="process-step-num">2</span>
-              <div className="process-icon">🪵</div>
-              <h3 className="process-card-title">Wooden Churning</h3>
-              <p className="process-card-desc">
-                The curd is churned in the early morning hours using a heavy wooden Bilona churner to extract soft, pure white butter (makkhan).
-              </p>
-            </div>
+            {/* Right Column: Timeline Cards */}
+            <div className="journey-right">
+              <div className="timeline-connector-line"></div>
+              
+              <div className="journey-steps-list">
+                <div className="journey-step-row">
+                  <div className="journey-step-number">1</div>
+                  <div className="journey-step-card">
+                    <img src="/journey_step1.png" alt="Milking with care" className="journey-step-img" />
+                    <div>
+                      <h4 className="journey-step-title">Milking with care</h4>
+                      <p className="journey-step-desc">
+                        A2 Desi Cows are Milked by Hand, Honoring Ancient Ayurvedic traditions for purity and authenticity.
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            <div className="process-card">
-              <span className="process-step-num">3</span>
-              <div className="process-icon">🔥</div>
-              <h3 className="process-card-title">Slow Mud-Pot Boiling</h3>
-              <p className="process-card-desc">
-                The extracted butter is slow-heated in clay pots (earthenware) over dry cow-dung cake fires. Earthenware locks in nutrients.
-              </p>
-            </div>
+                <div className="journey-step-row">
+                  <div className="journey-step-number">2</div>
+                  <div className="journey-step-card">
+                    <img src="/journey_step2.png" alt="Heating Milk and Preparing Curd" className="journey-step-img" />
+                    <div>
+                      <h4 className="journey-step-title">Heating Milk and Preparing Curd</h4>
+                      <p className="journey-step-desc">
+                        Heat A2 milk in a clay pot, add curd culture, and let it ferment into rich curd.
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            <div className="process-card">
-              <span className="process-step-num">4</span>
-              <div className="process-icon">🍯</div>
-              <h3 className="process-card-title">Granular Bottling</h3>
-              <p className="process-card-desc">
-                Once clear and golden, the ghee is filtered and poured into glass jars. It cools down naturally, forming delicious, granular beads.
-              </p>
+                <div className="journey-step-row">
+                  <div className="journey-step-number">3</div>
+                  <div className="journey-step-card">
+                    <img src="/journey_step3.png" alt="Traditionally wood churned" className="journey-step-img" />
+                    <div>
+                      <h4 className="journey-step-title">Traditionally wood churned</h4>
+                      <p className="journey-step-desc">
+                        The curd is churned using a wooden bilona, extracting rich and wholesome butter.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="journey-step-row">
+                  <div className="journey-step-number">4</div>
+                  <div className="journey-step-card">
+                    <img src="/journey_step4.png" alt="Slow Cooking the Butter" className="journey-step-img" />
+                    <div>
+                      <h4 className="journey-step-title">Slow Cooking the Butter</h4>
+                      <p className="journey-step-desc">
+                        This process evaporates water content and converts the butter into aromatic golden ghee.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -946,31 +1029,42 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Expandable FAQ Accordion Section */}
-      <section className="section faq-section" style={{ borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
+      {/* Expandable FAQ Accordion Section (Premium Two-column Layout) */}
+      <section className="section faq-section" style={{ background: '#fdfdfa', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)', padding: '80px 0' }}>
         <div className="container">
-          <span className="section-tag">Frequently Answered</span>
-          <h2 className="section-title">Ayurvedic Health Insights</h2>
-          <p className="section-subtitle">Have questions about Bilona churning, unrefined oils, or pure raw honey? Find answers below.</p>
-          
-          <div className="faq-list">
-            {FAQ_ITEMS.map((item, idx) => (
-              <div 
-                key={idx} 
-                className={`faq-item ${openFaqIdx === idx ? 'open' : ''}`}
-              >
-                <button 
-                  className="faq-question-btn" 
-                  onClick={() => setOpenFaqIdx(openFaqIdx === idx ? null : idx)}
-                >
-                  <span>{item.q}</span>
-                  <span className="faq-icon-arrow">▼</span>
-                </button>
-                <div className="faq-answer">
-                  <p>{item.a}</p>
-                </div>
+          <div className="faq-layout">
+            {/* Left Column: FAQ Accordion */}
+            <div className="faq-left">
+              <span className="section-tag" style={{ margin: 0 }}>Frequently Answered</span>
+              <h2 className="journey-title" style={{ margin: '8px 0 20px 0' }}>Frequently Asked Questions</h2>
+              
+              <div className="faq-list">
+                {FAQ_ITEMS.map((item, idx) => (
+                  <div 
+                    key={idx} 
+                    className={`faq-item ${openFaqIdx === idx ? 'open' : ''}`}
+                  >
+                    <button 
+                      className="faq-question-btn" 
+                      onClick={() => setOpenFaqIdx(openFaqIdx === idx ? null : idx)}
+                    >
+                      <span>{item.q}</span>
+                      <span className="faq-icon-arrow">{openFaqIdx === idx ? '−' : '+'}</span>
+                    </button>
+                    <div className="faq-answer">
+                      <p>{item.a}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Right Column: Farmer Illustration */}
+            <div className="faq-right">
+              <div className="faq-farmer-card">
+                <img src="/farmer_holding_ghee.png" alt="Pure A2 Desi Cow Ghee" className="faq-farmer-img" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1009,60 +1103,160 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Floating Gift Button */}
-      <button 
-        className="floating-gift-btn animate-bounce"
-        onClick={() => setIsPromoOpen(true)}
-        aria-label="Claim discount coupon"
-      >
-        🎁
-      </button>
+      {/* Floating Auth Icon Button (only show if not logged in) */}
+      {!user && (
+        <button 
+          className="floating-auth-btn animate-bounce"
+          onClick={() => setIsAuthPopupOpen(true)}
+          aria-label="Access Account Login"
+          title="Sign In / Register"
+        >
+          <User size={22} />
+        </button>
+      )}
 
-      {/* Slide-in Promo Coupon Drawer */}
-      {isPromoOpen && (
-        <div className="promo-drawer glass">
+      {/* Centered Auth Card Popup (Kasutam Style Gold Overlay) */}
+      {isAuthPopupOpen && !user && (
+        <div className="auth-overlay">
+          <div className="auth-popup">
           <button 
-            onClick={dismissPromo}
-            className="promo-drawer-close"
+            onClick={dismissAuthPopup}
+            className="auth-popup-close"
+            aria-label="Close login popup"
           >
             ✕
           </button>
           
-          <div style={{ textAlign: 'center' }}>
-            <span style={{ fontSize: '32px' }}>🎉</span>
-            <h4 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-primary)', fontSize: '1.25rem', margin: '8px 0' }}>Welcome Discount!</h4>
-            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '16px' }}>
-              Claim 15% off on your first organic purchase of A2 Milk, Bilona Ghee, or pickles.
-            </p>
-            
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              backgroundColor: 'var(--color-bg-secondary)',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '1.5px dashed var(--color-accent)',
-              marginBottom: '16px'
-            }}>
-              <strong style={{ fontSize: '1.1rem', color: 'var(--color-primary-dark)', letterSpacing: '1px' }}>WELCOME15</strong>
-              <button 
-                onClick={() => {
-                  navigator.clipboard.writeText("WELCOME15");
-                  showToast("Discount code copied! 🌾", "success");
-                }}
-                style={{ fontSize: '0.78rem', backgroundColor: 'var(--color-primary)', color: '#ffffff', padding: '4px 8px', borderRadius: '4px', fontWeight: 600 }}
-              >
-                Copy
-              </button>
-            </div>
-            
-            <span style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
-              * Applies automatically above ₹500.
+          {/* Logo & Headline */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '16px' }}>
+            <img 
+              src="/logo.jpg" 
+              alt="Amrit Bhoomi Logo" 
+              style={{ height: '48px', width: 'auto', borderRadius: '8px', objectFit: 'contain', border: '1px solid rgba(0,0,0,0.06)' }} 
+            />
+            <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-primary-dark)', fontSize: '1.25rem', marginTop: '12px', marginBottom: '2px', textAlign: 'center', fontWeight: 'bold' }}>
+              Login now to avail best offers!
+            </h3>
+            <span style={{ fontSize: '0.75rem', color: 'rgba(0,0,0,0.5)', letterSpacing: '0.5px' }}>
+              Innovative &bull; Pure &bull; Natural
             </span>
           </div>
+
+          <div className="auth-popup-form-box">
+            <div className="auth-popup-tabs">
+              <button 
+                className={`auth-popup-tab-btn ${authTab === 'login' ? 'active' : ''}`}
+                onClick={() => setAuthTab('login')}
+              >
+                Sign In
+              </button>
+              <button 
+                className={`auth-popup-tab-btn ${authTab === 'register' ? 'active' : ''}`}
+                onClick={() => setAuthTab('register')}
+              >
+                Join Free
+              </button>
+            </div>
+
+            {authTab === 'login' ? (
+              <form onSubmit={handleAuthLogin} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: '4px', textAlign: 'center' }}>
+                  Sign in to track orders and complete checkout faster.
+                </p>
+                
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <Mail size={16} style={{ position: 'absolute', left: '12px', color: 'var(--color-text-muted)' }} />
+                  <input 
+                    type="email" 
+                    placeholder="Email Address" 
+                    className="form-input" 
+                    style={{ paddingLeft: '38px', margin: 0, width: '100%', height: '40px', fontSize: '0.85rem' }}
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    required 
+                  />
+                </div>
+
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <Lock size={16} style={{ position: 'absolute', left: '12px', color: 'var(--color-text-muted)' }} />
+                  <input 
+                    type="password" 
+                    placeholder="Password" 
+                    className="form-input" 
+                    style={{ paddingLeft: '38px', margin: 0, width: '100%', height: '40px', fontSize: '0.85rem' }}
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
+                    required 
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className="btn btn-primary"
+                  style={{ width: '100%', padding: '10px', fontSize: '0.88rem', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', height: '40px', marginTop: '4px' }}
+                  disabled={authSubmitting}
+                >
+                  {authSubmitting ? 'Authenticating...' : <>Sign In <ArrowRight size={14} /></>}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleAuthRegister} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: '4px', textAlign: 'center' }}>
+                  Create a farm account to save shipping addresses.
+                </p>
+
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <User size={16} style={{ position: 'absolute', left: '12px', color: 'var(--color-text-muted)' }} />
+                  <input 
+                    type="text" 
+                    placeholder="Your Full Name" 
+                    className="form-input" 
+                    style={{ paddingLeft: '38px', margin: 0, width: '100%', height: '40px', fontSize: '0.85rem' }}
+                    value={authName}
+                    onChange={(e) => setAuthName(e.target.value)}
+                    required 
+                  />
+                </div>
+
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <Mail size={16} style={{ position: 'absolute', left: '12px', color: 'var(--color-text-muted)' }} />
+                  <input 
+                    type="email" 
+                    placeholder="Email Address" 
+                    className="form-input" 
+                    style={{ paddingLeft: '38px', margin: 0, width: '100%', height: '40px', fontSize: '0.85rem' }}
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    required 
+                  />
+                </div>
+
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <Lock size={16} style={{ position: 'absolute', left: '12px', color: 'var(--color-text-muted)' }} />
+                  <input 
+                    type="password" 
+                    placeholder="Create Password" 
+                    className="form-input" 
+                    style={{ paddingLeft: '38px', margin: 0, width: '100%', height: '40px', fontSize: '0.85rem' }}
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
+                    required 
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className="btn btn-primary"
+                  style={{ width: '100%', padding: '10px', fontSize: '0.88rem', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', height: '40px', marginTop: '4px' }}
+                  disabled={authSubmitting}
+                >
+                  {authSubmitting ? 'Registering...' : <>Register Account <UserPlus size={14} /></>}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
+      </div>
       )}
     </div>
   );

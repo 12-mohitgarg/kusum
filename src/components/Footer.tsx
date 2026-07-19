@@ -30,8 +30,29 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="footer">
-      <div className="container">
+    <>
+      {/* Also Available On Section */}
+      <section className="available-on-strip">
+        <div className="container">
+          <div className="available-on-content">
+            <h3 className="available-on-title">Also Available On</h3>
+            <div className="available-on-logos">
+              <a href="https://blinkit.com" target="_blank" rel="noopener noreferrer" className="available-logo-card">
+                <span className="blinkit-logo">blink<span className="blinkit-yellow">it</span></span>
+              </a>
+              <a href="https://flipkart.com" target="_blank" rel="noopener noreferrer" className="available-logo-card">
+                <span className="flipkart-logo">Flipkart <span className="flipkart-blue">🛒</span></span>
+              </a>
+              <a href="https://amazon.in" target="_blank" rel="noopener noreferrer" className="available-logo-card">
+                <span className="amazon-logo">amazon<span className="amazon-arrow">.in</span></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <div className="container">
         {/* Trust Accreditations Strip */}
         <div className="trust-accreditations-strip">
           <div className="accreditation-item">
@@ -134,7 +155,8 @@ export const Footer: React.FC = () => {
           </div>
         </div>
       </div>
-    </footer>
+      </footer>
+    </>
   );
 };
 export default Footer;

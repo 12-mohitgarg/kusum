@@ -815,15 +815,14 @@
   }
 
   /* Mobile Overrides for overlays to prevent overlap and overflow */
-  .floating-gift-btn {
+  .floating-auth-btn {
     bottom: 82px !important;
     right: 20px !important;
     width: 52px !important;
     height: 52px !important;
-    font-size: 20px !important;
   }
   
-  .promo-drawer {
+  .auth-popup {
     top: 50% !important;
     left: 50% !important;
     bottom: auto !important;
@@ -835,8 +834,8 @@
   }
 }
 
-/* Floating Action: Gift Coupon Button */
-.floating-gift-btn {
+/* Floating Action: Account Auth Button */
+.floating-auth-btn {
   position: fixed;
   bottom: 100px;
   right: 30px;
@@ -849,41 +848,382 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
   z-index: 99;
   border: 2px solid var(--color-accent);
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.floating-gift-btn:hover {
+.floating-auth-btn:hover {
   transform: scale(1.08);
 }
 
-/* Coupon Drawer Card */
-.promo-drawer {
+/* Auth Popup Card */
+/* Auth Popup Overlay (Centering Backdrop) */
+.auth-overlay {
   position: fixed;
-  bottom: 170px;
-  right: 30px;
-  width: 320px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: overlayFadeIn 0.3s ease;
+}
+
+/* Auth Popup Card (Kasutam-style Gold theme) */
+.auth-popup {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background-color: #fbe6b5; /* Warm gold background! */
+  border-radius: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-lg), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  padding: 32px 24px 24px;
+  animation: fadeIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-sizing: border-box;
+}
+
+.auth-popup-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 14px;
+  color: #000000;
+  background-color: rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color var(--transition-fast);
+}
+
+.auth-popup-close:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.auth-popup-form-box {
   background-color: #ffffff;
   border-radius: 16px;
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-lg);
   padding: 24px;
-  z-index: 999;
-  animation: fadeIn 0.4s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
 }
 
-.promo-drawer-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 18px;
-  color: var(--color-text-muted);
-  font-weight: bold;
-  cursor: pointer;
+.auth-popup-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: 16px;
+}
+
+.auth-popup-tab-btn {
+  flex: 1;
+  padding: 10px;
   background: none;
   border: none;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.95rem;
+  transition: all var(--transition-fast);
 }
 
+.auth-popup-tab-btn.active {
+  color: var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
+  margin-bottom: -2px;
+}
+
+/* Journey of our Ghee Styles */
+.journey-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.journey-left {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.journey-title {
+  font-family: var(--font-serif);
+  font-size: 2.8rem;
+  color: var(--color-primary-dark);
+  line-height: 1.2;
+}
+
+.journey-birds-img {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  border-radius: 12px;
+}
+
+.journey-right {
+  position: relative;
+  padding-left: 50px;
+}
+
+/* Timeline central dotted line */
+.timeline-connector-line {
+  position: absolute;
+  left: 20px;
+  top: 40px;
+  bottom: 40px;
+  width: 2px;
+  border-left: 2px dashed #9E7A4A;
+  z-index: 1;
+}
+
+.journey-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.journey-step-row {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.journey-step-number {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: var(--color-primary-dark);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.15rem;
+  border: 2px solid #ffffff;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  margin-left: -51px; /* Centers it on the timeline connector */
+}
+
+.journey-step-card {
+  flex: 1;
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.journey-step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.journey-step-card:hover .journey-step-img {
+  transform: scale(1.08) rotate(3deg);
+}
+
+.journey-step-img {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-accent);
+  flex-shrink: 0;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes numberPulse {
+  0% { box-shadow: 0 0 0 0 rgba(158, 122, 74, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(158, 122, 74, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(158, 122, 74, 0); }
+}
+
+.journey-step-number {
+  transition: all var(--transition-fast);
+}
+
+.journey-step-row:hover .journey-step-number {
+  animation: numberPulse 1.2s infinite;
+  background-color: var(--color-accent);
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.journey-step-title {
+  font-family: var(--font-serif);
+  color: var(--color-primary-dark);
+  font-size: 1.25rem;
+  margin-bottom: 6px;
+}
+
+.journey-step-desc {
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+/* FAQ Section Layout */
+.faq-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.faq-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.faq-farmer-card {
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.faq-farmer-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.08));
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background-color: #6d826f; /* Greenish background matching screenshot! */
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.faq-item.open {
+  background-color: #556c57;
+}
+
+.faq-question-btn {
+  width: 100%;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+.faq-icon-arrow {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #f0f5f1;
+}
+
+.faq-item.open .faq-answer {
+  max-height: 200px;
+}
+
+.faq-answer p {
+  padding: 16px 20px;
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 991px) {
+  .journey-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .journey-left {
+    text-align: center;
+    align-items: center;
+  }
+  .faq-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .faq-right {
+    order: -1; /* Show graphic on top on mobile! */
+  }
+}
+
+@media (max-width: 600px) {
+  .journey-step-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  .journey-step-number {
+    display: none; /* Hide timeline numbers on small screens to simplify */
+  }
+  .journey-right {
+    padding-left: 0;
+  }
+  .timeline-connector-line {
+    display: none;
+  }
+  .journey-title {
+    font-size: 2.2rem;
+  }
+  .journey-birds-img {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .faq-farmer-card {
+    max-width: 260px;
+    margin: 0 auto;
+  }
+  .recipes-section .grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+}

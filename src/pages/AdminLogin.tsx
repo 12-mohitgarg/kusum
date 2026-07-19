@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Key, Mail, ShieldAlert, User } from 'lucide-react';
+import { Key, Mail, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
 
@@ -70,19 +70,11 @@ export const AdminLogin: React.FC = () => {
       }}>
         {/* Page Header */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '56px',
-            height: '56px',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(30,63,32,0.05)',
-            color: 'var(--color-primary)',
-            marginBottom: '16px'
-          }}>
-            <ShieldAlert size={26} />
-          </div>
+          <img 
+            src="/logo.jpg" 
+            alt="Amrit Bhoomi" 
+            style={{ height: '60px', width: 'auto', borderRadius: '8px', objectFit: 'contain', marginBottom: '16px', border: '1px solid var(--color-border)' }} 
+          />
           <h2 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-primary)', fontSize: '1.8rem', marginBottom: '6px' }}>
             {isRegister ? 'Create Account' : 'Amrit Bhoomi Portals'}
           </h2>

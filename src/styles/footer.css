@@ -1,9 +1,94 @@
+/* Also Available On Section */
+.available-on-strip {
+  background-color: #6d826f;
+  padding: 40px 0;
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+}
+
+.available-on-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.available-on-title {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+.available-on-logos {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.available-logo-card {
+  background-color: #ffffff;
+  padding: 14px 28px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  min-width: 140px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.25rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.available-logo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.blinkit-logo {
+  color: #000000;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.blinkit-yellow {
+  color: #ffc400;
+}
+
+.flipkart-logo {
+  color: #2874f0;
+  font-family: 'Inter', sans-serif;
+  font-style: italic;
+}
+
+.flipkart-blue {
+  color: #ffe500;
+}
+
+.amazon-logo {
+  color: #111111;
+  font-family: 'Inter', sans-serif;
+}
+
+.amazon-arrow {
+  color: #ff9900;
+}
+
+/* Footer Section */
 .footer {
-  background-color: var(--color-primary-dark);
-  color: var(--color-text-light);
+  background-image: linear-gradient(rgba(253, 252, 248, 0.88), rgba(253, 252, 248, 0.88)), url('/village_landscape_footer.png');
+  background-color: #fdfcf8;
+  background-size: cover;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  color: var(--color-primary-dark);
   padding: 80px 0 40px;
   font-family: var(--font-sans);
-  border-top: 2px solid var(--color-accent);
+  border-top: 2px solid var(--color-primary);
 }
 
 .footer-grid {
@@ -24,21 +109,21 @@
   font-size: 26px;
   font-weight: 700;
   letter-spacing: 1.5px;
-  color: var(--color-accent);
+  color: var(--color-primary);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .footer-desc {
-  color: #cddbcf;
+  color: var(--color-text-main);
   font-size: 0.9rem;
   line-height: 1.7;
 }
 
 .footer-heading {
   font-family: var(--font-serif);
-  color: var(--color-accent);
+  color: var(--color-primary-dark);
   font-size: 1.15rem;
   font-weight: 600;
   margin-bottom: 8px;
@@ -53,12 +138,12 @@
 
 .footer-link {
   font-size: 0.9rem;
-  color: #cddbcf;
+  color: var(--color-text-main);
   transition: all var(--transition-fast);
 }
 
 .footer-link:hover {
-  color: var(--color-accent);
+  color: var(--color-primary);
   padding-left: 4px;
 }
 
@@ -66,7 +151,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  color: #cddbcf;
+  color: var(--color-text-main);
   font-size: 0.9rem;
 }
 
@@ -78,8 +163,8 @@
 
 .newsletter-input-group {
   display: flex;
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   overflow: hidden;
   padding: 4px;
@@ -88,7 +173,7 @@
 .newsletter-input {
   background: none;
   border: none;
-  color: #ffffff;
+  color: var(--color-text-main);
   padding: 10px 14px;
   font-size: 0.9rem;
   flex: 1;
@@ -96,31 +181,36 @@
 }
 
 .newsletter-input::placeholder {
-  color: #a3bca7;
+  color: var(--color-text-muted);
 }
 
 .newsletter-btn {
-  background-color: var(--color-accent);
-  color: var(--color-primary-dark);
+  background-color: var(--color-primary);
+  color: #ffffff;
   font-weight: 600;
   padding: 10px 20px;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .newsletter-btn:hover {
-  background-color: var(--color-accent-light);
+  background-color: var(--color-primary-dark);
   transform: translateY(0);
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--color-border);
   padding-top: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.85rem;
-  color: #a3bca7;
+  color: var(--color-text-muted);
 }
 
 .footer-bottom-links {
@@ -128,10 +218,40 @@
   gap: 24px;
 }
 
+.trust-accreditations-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(109, 130, 111, 0.08);
+  border: 1px solid rgba(109, 130, 111, 0.15);
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.accreditation-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-primary-dark);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.accreditation-svg {
+  color: var(--color-primary);
+}
+
 @media (max-width: 992px) {
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 40px;
+  }
+  .available-on-content {
+    flex-direction: column;
+    gap: 20px;
   }
 }
 
@@ -144,5 +264,19 @@
     flex-direction: column;
     gap: 16px;
     text-align: center;
+  }
+  .trust-accreditations-strip {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .available-logo-card {
+    min-width: 110px;
+    padding: 10px 16px;
+    font-size: 1.05rem;
+  }
+  .available-on-logos {
+    gap: 12px;
   }
 }

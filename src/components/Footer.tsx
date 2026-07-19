@@ -12,7 +12,19 @@ export const Footer: React.FC = () => {
     e.preventDefault();
     if (!email) return;
     
-    // Simulate API call
+    // Retrieve already subscribed emails from localStorage to prevent duplicate subscription
+    const subscribedEmailsStr = localStorage.getItem('amritbhoomi_newsletter_subscribers');
+    const subscribedEmails: string[] = subscribedEmailsStr ? JSON.parse(subscribedEmailsStr) : [];
+    
+    const normEmail = email.trim().toLowerCase();
+    if (subscribedEmails.includes(normEmail)) {
+      showToast("This email is already subscribed! 🌾", "info");
+      return;
+    }
+    
+    subscribedEmails.push(normEmail);
+    localStorage.setItem('amritbhoomi_newsletter_subscribers', JSON.stringify(subscribedEmails));
+    
     showToast("Successfully subscribed to Amrit Bhoomi's newsletters! 🌾", "success");
     setEmail('');
   };

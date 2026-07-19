@@ -70,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle }) => {
             <User size={20} />
           </Link>
           
-          <a href="#bilona-process" className="nav-link" style={{ fontSize: '0.9rem', color: 'var(--color-primary)', fontWeight: 600, textTransform: 'capitalize' }}>
+          <a href="/#bilona-process" className="nav-link" style={{ fontSize: '0.9rem', color: 'var(--color-primary)', fontWeight: 600, textTransform: 'capitalize' }}>
             Our story
           </a>
         </div>

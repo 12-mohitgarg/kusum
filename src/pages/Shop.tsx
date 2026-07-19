@@ -14,9 +14,21 @@ export const Shop: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('default');
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(12);
 
   // Read URL category filter if any
   const categoryFilter = searchParams.get('category') || 'all';
+  const urlSearchQuery = searchParams.get('search') || '';
+
+  // Synchronize state with URL search param on mount/change
+  useEffect(() => {
+    setSearchQuery(urlSearchQuery);
+  }, [urlSearchQuery]);
+
+  // Reset visibleCount when filters/category change
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [categoryFilter, urlSearchQuery, sortBy]);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -98,7 +110,19 @@ export const Shop: React.FC = () => {
                 placeholder="Search products..."
                 className="search-field"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSearchQuery(val);
+                  setSearchParams(prev => {
+                    const newParams = new URLSearchParams(prev);
+                    if (val.trim()) {
+                      newParams.set('search', val);
+                    } else {
+                      newParams.delete('search');
+                    }
+                    return newParams;
+                  });
+                }}
               />
             </div>
 
@@ -136,11 +160,24 @@ export const Shop: React.FC = () => {
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>Try clearing your search query or choosing another category.</p>
           </div>
         ) : (
-          <div className="grid-3">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <>
+            <div className="grid-3">
+              {filteredProducts.slice(0, visibleCount).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            {!loading && filteredProducts.length > visibleCount && (
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px', marginBottom: '20px' }}>
+                <button 
+                  className="btn btn-primary" 
+                  style={{ padding: '12px 32px', fontSize: '0.95rem' }}
+                  onClick={() => setVisibleCount(prev => prev + 12)}
+                >
+                  Load More Products
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

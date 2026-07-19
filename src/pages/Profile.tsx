@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ClipboardList, User, Package } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { getOrders, type Order } from '../services/db';
+import { getOrdersByUser, type Order } from '../services/db';
 import { useToast } from '../components/Toast';
 import '../styles/profile.css';
 
@@ -19,11 +19,7 @@ export const Profile: React.FC = () => {
       if (!user) return;
       setLoadingOrders(true);
       try {
-        const allOrders = await getOrders();
-        // Filter orders by email
-        const userOrders = allOrders.filter(
-          o => o.email.toLowerCase() === user.email.toLowerCase()
-        );
+        const userOrders = await getOrdersByUser(user.email);
         setOrders(userOrders);
       } catch (e) {
         console.error("Failed to load user orders", e);

@@ -9,7 +9,8 @@ import {
   Trash2, 
   Edit3, 
   Upload, 
-  Sparkles
+  Sparkles,
+  Search
 } from 'lucide-react';
 import { 
   getProducts, 
@@ -18,6 +19,7 @@ import {
   deleteProduct, 
   getOrders, 
   updateOrderStatus, 
+  updateOrderPaymentStatus,
   getCoupons, 
   addCoupon, 
   deleteCoupon,
@@ -42,6 +44,11 @@ export const Admin: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Products search & pagination states
+  const [prodSearchQuery, setProdSearchQuery] = useState('');
+  const [prodCurrentPage, setProdCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Modal controls
   const [isProdModalOpen, setIsProdModalOpen] = useState(false);
@@ -226,6 +233,16 @@ export const Admin: React.FC = () => {
     }
   };
 
+  const handleUpdatePaymentStatus = async (orderId: string, paymentStatus: Order['paymentStatus']) => {
+    try {
+      await updateOrderPaymentStatus(orderId, paymentStatus);
+      showToast(`Order payment status updated to ${paymentStatus}!`, "success");
+      fetchData();
+    } catch (e) {
+      showToast("Failed to update payment status", "error");
+    }
+  };
+
   // Coupon actions
   const handleAddCouponSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,6 +280,15 @@ export const Admin: React.FC = () => {
     .reduce((sum, o) => sum + o.total, 0);
 
   const pendingOrders = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled');
+
+  const filteredProducts = products.filter(prod => {
+    const q = prodSearchQuery.toLowerCase();
+    return prod.name.toLowerCase().includes(q) || prod.category.toLowerCase().includes(q);
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (prodCurrentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="admin-page">
@@ -460,6 +486,48 @@ export const Admin: React.FC = () => {
                     </button>
                   </div>
 
+                  {/* Search and Pagination Controls */}
+                  <div className="admin-search-pagination-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '20px 0', gap: '16px', flexWrap: 'wrap' }}>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', flex: 1, maxWidth: '400px' }}>
+                      <Search size={18} style={{ position: 'absolute', left: '12px', color: 'var(--color-text-muted)' }} />
+                      <input
+                        type="text"
+                        placeholder="Search products by name or category..."
+                        className="form-input"
+                        style={{ paddingLeft: '40px', width: '100%', marginBottom: 0 }}
+                        value={prodSearchQuery}
+                        onChange={(e) => {
+                          setProdSearchQuery(e.target.value);
+                          setProdCurrentPage(1);
+                        }}
+                      />
+                    </div>
+                    
+                    {totalPages > 1 && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <button
+                          className="btn btn-secondary"
+                          style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                          disabled={prodCurrentPage === 1}
+                          onClick={() => setProdCurrentPage(prev => Math.max(1, prev - 1))}
+                        >
+                          Previous
+                        </button>
+                        <span style={{ fontSize: '0.88rem', color: 'var(--color-text)' }}>
+                          Page <strong>{prodCurrentPage}</strong> of <strong>{totalPages}</strong> (Total: {filteredProducts.length})
+                        </span>
+                        <button
+                          className="btn btn-secondary"
+                          style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                          disabled={prodCurrentPage === totalPages}
+                          onClick={() => setProdCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        >
+                          Next
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="admin-table-wrapper">
                     <table className="admin-table">
                       <thead>
@@ -473,7 +541,7 @@ export const Admin: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {products.map((prod) => (
+                        {paginatedProducts.map((prod) => (
                           <tr key={prod.id}>
                             <td>
                               <img src={prod.image} alt={prod.name} className="admin-table-img" />
@@ -585,17 +653,35 @@ export const Admin: React.FC = () => {
                                 </span>
                               </td>
                               <td>
-                                <select
-                                  className="sort-select"
-                                  style={{ padding: '6px 10px', fontSize: '0.8rem' }}
-                                  value={order.status}
-                                  onChange={(e) => handleUpdateStatus(order.id, e.target.value as any)}
-                                >
-                                  <option value="processing">Processing</option>
-                                  <option value="shipped">Shipped</option>
-                                  <option value="delivered">Delivered</option>
-                                  <option value="cancelled">Cancelled</option>
-                                </select>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <span style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', minWidth: '55px' }}>Status:</span>
+                                    <select
+                                      className="sort-select"
+                                      style={{ padding: '4px 8px', fontSize: '0.78rem' }}
+                                      value={order.status}
+                                      onChange={(e) => handleUpdateStatus(order.id, e.target.value as any)}
+                                    >
+                                      <option value="processing">Processing</option>
+                                      <option value="shipped">Shipped</option>
+                                      <option value="delivered">Delivered</option>
+                                      <option value="cancelled">Cancelled</option>
+                                    </select>
+                                  </div>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <span style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', minWidth: '55px' }}>Payment:</span>
+                                    <select
+                                      className="sort-select"
+                                      style={{ padding: '4px 8px', fontSize: '0.78rem' }}
+                                      value={order.paymentStatus}
+                                      onChange={(e) => handleUpdatePaymentStatus(order.id, e.target.value as any)}
+                                    >
+                                      <option value="pending">Pending</option>
+                                      <option value="paid">Paid</option>
+                                      <option value="failed">Failed</option>
+                                    </select>
+                                  </div>
+                                </div>
                               </td>
                             </tr>
                           ))}

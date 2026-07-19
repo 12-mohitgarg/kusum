@@ -1,0 +1,8 @@
+test case 
+
+Header - Search does not return correct or relevant results. 
+Product Image- The displayed image does not match the product data.
+Footer- The same email can be subscribed multiple times.
+user order history- Order history is not working correctly or does not display data properly.
+our Story- The page/link is not working.
+purchase option- radio button take time to select on first row.

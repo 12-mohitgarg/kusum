@@ -6,7 +6,9 @@ import {
   getDoc, 
   updateDoc, 
   deleteDoc, 
-  setDoc
+  setDoc,
+  query,
+  where
 } from 'firebase/firestore';
 
 export interface ProductOption {
@@ -316,9 +318,9 @@ const INITIAL_PRODUCTS: Product[] = [
     description: "Thick, creamy set curd prepared traditionally in clay pots from boiled whole A2 cow milk.",
     details: "Our set curd is cultured in traditional clay pots (kulhads/handis). Clay is porous, absorbing excess water naturally to yield an incredibly thick, smooth, and creamy curd with a mild earthy aroma. This traditional process retains active probiotics, supporting excellent gut health and digestion.",
     category: "dairy",
-    image: "https://res.cloudinary.com/de6uqmt1m/image/upload/v1784396173/ulwmrrk99t9yl6awqzbr.jpg",
+    image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=600",
     gallery: [
-      "https://res.cloudinary.com/de6uqmt1m/image/upload/v1784396173/ulwmrrk99t9yl6awqzbr.jpg"
+      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=600"
     ],
     benefits: [
       "Slow set in natural clay pots for thick creamy texture",
@@ -520,6 +522,24 @@ export const getOrders = async (): Promise<Order[]> => {
   return parsedOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 };
 
+export const getOrdersByUser = async (email: string): Promise<Order[]> => {
+  if (!isDemoMode && db) {
+    try {
+      const q = query(collection(db, 'orders'), where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+      const list: Order[] = [];
+      querySnapshot.forEach((docSnap) => {
+        list.push({ id: docSnap.id, ...docSnap.data() } as Order);
+      });
+      return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } catch (e) {
+      console.error("Firestore getOrdersByUser failed.", e);
+    }
+  }
+  const orders = await getOrders();
+  return orders.filter(o => o.email.toLowerCase() === email.toLowerCase());
+};
+
 export const placeOrder = async (orderData: Omit<Order, 'id' | 'createdAt' | 'status'>): Promise<Order> => {
   const newOrder: Order = {
     ...orderData,
@@ -528,31 +548,42 @@ export const placeOrder = async (orderData: Omit<Order, 'id' | 'createdAt' | 'st
     createdAt: new Date().toISOString()
   };
 
+  // Deduct stock in Firestore or LocalStorage
+  try {
+    const products = await getProducts();
+    for (const item of newOrder.items) {
+      const prod = products.find(p => p.id === item.productId);
+      if (prod) {
+        const opt = prod.options.find(o => o.size === item.size);
+        if (opt) {
+          opt.stock = Math.max(0, opt.stock - item.quantity);
+          if (!isDemoMode && db) {
+            const docRef = doc(db, 'products', prod.id);
+            await updateDoc(docRef, { options: prod.options });
+          }
+        }
+      }
+    }
+    if (isDemoMode || !db) {
+      localStorage.setItem('amritbhoomi_products_v2', JSON.stringify(products));
+    }
+  } catch (e) {
+    console.error("Error updating stock during placeOrder:", e);
+  }
+
   if (!isDemoMode && db) {
     try {
       await setDoc(doc(db, 'orders', newOrder.id), newOrder);
       return newOrder;
     } catch (e) {
       console.error("Firestore placeOrder failed.", e);
+      throw e;
     }
   }
 
   const orders = await getOrders();
   orders.push(newOrder);
   localStorage.setItem('amritbhoomi_orders_v2', JSON.stringify(orders));
-  
-  // Deduct stock in LocalStorage
-  const products = await getProducts();
-  newOrder.items.forEach(item => {
-    const prod = products.find(p => p.id === item.productId);
-    if (prod) {
-      const opt = prod.options.find(o => o.size === item.size);
-      if (opt) {
-        opt.stock = Math.max(0, opt.stock - item.quantity);
-      }
-    }
-  });
-  localStorage.setItem('amritbhoomi_products_v2', JSON.stringify(products));
 
   return newOrder;
 };
@@ -564,6 +595,7 @@ export const updateOrderStatus = async (id: string, status: Order['status']): Pr
       return;
     } catch (e) {
       console.error("Firestore updateOrderStatus failed.", e);
+      throw e;
     }
   }
 
@@ -571,6 +603,25 @@ export const updateOrderStatus = async (id: string, status: Order['status']): Pr
   const idx = orders.findIndex(o => o.id === id);
   if (idx !== -1) {
     orders[idx].status = status;
+    localStorage.setItem('amritbhoomi_orders_v2', JSON.stringify(orders));
+  }
+};
+
+export const updateOrderPaymentStatus = async (id: string, paymentStatus: Order['paymentStatus']): Promise<void> => {
+  if (!isDemoMode && db) {
+    try {
+      await updateDoc(doc(db, 'orders', id), { paymentStatus });
+      return;
+    } catch (e) {
+      console.error("Firestore updateOrderPaymentStatus failed.", e);
+      throw e;
+    }
+  }
+
+  const orders = await getOrders();
+  const idx = orders.findIndex(o => o.id === id);
+  if (idx !== -1) {
+    orders[idx].paymentStatus = paymentStatus;
     localStorage.setItem('amritbhoomi_orders_v2', JSON.stringify(orders));
   }
 };
@@ -728,8 +779,7 @@ export const seed200Products = async (): Promise<boolean> => {
     pickles: {
       names: ['Homemade Spicy Green Chili Pickle', 'Traditional Grandma Mango Achar', 'Tangy Lime Garlic Achar', 'Organic Ginger Lime Pickle', 'Spicy Carrot & Cauliflower Mix Pickle'],
       images: [
-        'https://res.cloudinary.com/de6uqmt1m/image/upload/v1784396199/o3pvgqsdgqwgde87yb7e.jpg',
-        'https://res.cloudinary.com/de6uqmt1m/image/upload/v1784396173/ulwmrrk99t9yl6awqzbr.jpg'
+        'https://res.cloudinary.com/de6uqmt1m/image/upload/v1784396199/o3pvgqsdgqwgde87yb7e.jpg'
       ],
       details: 'Prepared using traditional recipes. Sun-dried and slow-cured in pure wood-pressed mustard oil with hand-ground spices for rich, tangy probiotic flavors.',
       benefits: ['Traditionally sun-cured over weeks', 'Preserved in pure wood-pressed mustard oil', 'No artificial colors or preservatives', 'Rich in natural gut-friendly lactobacillus probiotics'],
@@ -740,7 +790,8 @@ export const seed200Products = async (): Promise<boolean> => {
       names: ['Fresh A2 Gir Cow Milk', 'Premium Grass-Fed Murrah Buffalo Milk', 'Clay-Pot Set Probiotic Dahi (Curd)', 'Fresh Soft Cottage Cheese (Paneer)', 'Hand-Churned Country White Butter'],
       images: [
         'https://res.cloudinary.com/de6uqmt1m/image/upload/v1784396169/us48gdquhokihzxsub5g.jpg',
-        'https://res.cloudinary.com/de6uqmt1m/image/upload/v1784396173/ulwmrrk99t9yl6awqzbr.jpg'
+        'https://res.cloudinary.com/de6uqmt1m/image/upload/v1784396173/ulwmrrk99t9yl6awqzbr.jpg',
+        'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=600'
       ],
       details: 'Produced sustainably at our local organic pastures. Farm-fresh, unadulterated, immediately chilled, and delivered in glass jars to retain rich vitamins and minerals.',
       benefits: ['Cruelty-free sourcing from happy grass-fed cows', 'Eco-friendly glass bottle packaging', 'Probiotic-rich and gut friendly', 'No hormone injections or synthetic feed'],

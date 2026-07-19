@@ -61,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle }) => {
         </button>
 
         {/* Left Links (Desktop) */}
-        <div className="nav-group-left" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <div className="nav-group-left">
           <Link to="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', fontSize: '0.88rem', borderRadius: '8px', background: 'var(--color-primary)', color: '#ffffff', textDecoration: 'none', fontWeight: 600 }}>
             <ShoppingBag size={15} /> Products
           </Link>
@@ -83,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle }) => {
         </div>
 
         {/* Right Actions */}
-        <div className="nav-group-right" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="nav-group-right">
           {/* Search input bar */}
           <form 
             onSubmit={(e) => {
@@ -129,14 +129,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle }) => {
           </form>
 
           {user && user.isAdmin && (
-            <Link to="/admin" className="nav-btn" title="Admin Portal">
+            <Link to="/admin" className="nav-btn nav-admin-btn-desktop" title="Admin Portal">
               <ShieldAlert size={18} style={{ color: '#c5a86d' }} />
               <span style={{ fontSize: '11px', marginLeft: '4px', fontWeight: 600, color: '#c5a86d' }}>Admin</span>
             </Link>
           )}
 
           {user ? (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="nav-user-greet-desktop" style={{ display: 'flex', alignItems: 'center' }}>
               <Link to="/profile" className="nav-btn" style={{ display: 'flex', alignItems: 'center', gap: '4px' }} title="My Account">
                 <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-primary)' }}>
                   Hi, {user.displayName.split(' ')[0]}
@@ -184,12 +184,84 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle }) => {
               </button>
             </div>
 
+            {/* Mobile User Profile Header inside drawer */}
+            {user && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid var(--color-border)', paddingBottom: '16px', marginBottom: '8px' }}>
+                <div style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--color-bg-secondary)',
+                  color: 'var(--color-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  border: '1px solid var(--color-accent)'
+                }}>
+                  {user.displayName ? user.displayName.split(' ')[0][0].toUpperCase() : 'U'}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', lineHeight: '1.2' }}>Logged in as</span>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-primary)' }}>{user.displayName || user.email}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Mobile Search input inside drawer */}
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (searchVal.trim()) {
+                  navigate(`/shop?search=${searchVal}`);
+                  setMobileMenuOpen(false);
+                }
+              }}
+              style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', marginBottom: '16px' }}
+            >
+              <input 
+                type="text" 
+                placeholder="Search products..." 
+                value={searchVal}
+                onChange={(e) => setSearchVal(e.target.value)}
+                style={{
+                  width: '100%',
+                  height: '40px',
+                  padding: '0 36px 0 16px',
+                  borderRadius: '20px',
+                  border: '1px solid var(--color-border)',
+                  outline: 'none',
+                  fontSize: '0.85rem',
+                  backgroundColor: '#ffffff'
+                }}
+              />
+              <button 
+                type="submit" 
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--color-text-muted)',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                <Search size={15} />
+              </button>
+            </form>
+
             <div className="mobile-nav-links">
               <Link to="/" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
                 Home
               </Link>
               <Link to="/shop" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
                 Shop Products
+              </Link>
+              <Link to="/profile" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                My Account
               </Link>
               {user && user.isAdmin && (
                 <Link to="/admin" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)} style={{ color: '#c5a86d', display: 'flex', alignItems: 'center', gap: '8px' }}>

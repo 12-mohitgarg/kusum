@@ -4,6 +4,7 @@ import { Star, ShoppingCart } from 'lucide-react';
 import type { Product, ProductOption } from '../services/db';
 import { useCart } from '../context/CartContext';
 import { useToast } from './Toast';
+import '../styles/shop.css';
 
 interface ProductCardProps {
   product: Product;
@@ -34,7 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div className="product-card animated">
-      <Link to={`/product/${product.id}`} style={{ display: 'block' }}>
+      <Link to={`/product/${product.id}`} className="card-main-link">
         {/* Card Image */}
         <div className="card-img-wrapper">
           <img 
@@ -77,7 +78,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </Link>
 
-      <div style={{ padding: '0 20px 20px 20px', display: 'flex', flexDirection: 'column' }}>
+      <div className="card-actions-container">
         {/* Weight Options */}
         {product.options.length > 1 && (
           <div className="card-size-selector">

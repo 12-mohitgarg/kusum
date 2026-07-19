@@ -29,11 +29,6 @@
 }
 
 /* Form Styles */
-.form-row-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
 
 /* Payment Methods */
 .payment-methods {
@@ -212,5 +207,11 @@
   }
   .auth-gate-form-panel {
     padding: 30px 24px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .checkout-card {
+    padding: 16px;
   }
 }

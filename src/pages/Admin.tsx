@@ -23,8 +23,6 @@ import {
   getCoupons, 
   addCoupon, 
   deleteCoupon,
-  clearAllProducts,
-  seed200Products,
   type Product,
   type ProductOption,
   type Order,
@@ -66,41 +64,6 @@ export const Admin: React.FC = () => {
   const [prodFeatured, setProdFeatured] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
 
-  const handleWipe = async () => {
-    if (!window.confirm("Are you sure you want to clear all products from the database?")) return;
-    setLoading(true);
-    try {
-      const success = await clearAllProducts();
-      if (success) {
-        showToast("All products wiped successfully. 🗑️", "success");
-        await fetchData();
-      } else {
-        showToast("Failed to wipe products.", "error");
-      }
-    } catch (e: any) {
-      showToast(e.message || "Error clearing products", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSeed = async () => {
-    if (!window.confirm("Are you sure you want to wipe the database and seed 200 Kasutam-style products? This may take a moment...")) return;
-    setLoading(true);
-    try {
-      const success = await seed200Products();
-      if (success) {
-        showToast("Successfully seeded 200 products across all categories! ✨", "success");
-        await fetchData();
-      } else {
-        showToast("Seeding failed.", "error");
-      }
-    } catch (e: any) {
-      showToast(e.message || "Error seeding products", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Form states - Coupons
   const [newCode, setNewCode] = useState('');
@@ -461,22 +424,6 @@ export const Admin: React.FC = () => {
                   <div className="card-header-actions" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     <h3 className="card-title-sub" style={{ marginRight: 'auto' }}>Products Inventory</h3>
                     <button 
-                      onClick={handleSeed}
-                      className="btn btn-secondary"
-                      style={{ display: 'flex', gap: '6px', alignItems: 'center', backgroundColor: '#e3decb', color: 'var(--color-primary-dark)', borderColor: '#e3decb', fontWeight: 600, padding: '8px 16px' }}
-                      disabled={loading}
-                    >
-                      ✨ Seed 200 Products
-                    </button>
-                    <button 
-                      onClick={handleWipe}
-                      className="btn btn-secondary"
-                      style={{ display: 'flex', gap: '6px', alignItems: 'center', backgroundColor: '#fcdcd4', color: '#b32e2e', borderColor: '#fcdcd4', fontWeight: 600, padding: '8px 16px' }}
-                      disabled={loading}
-                    >
-                      🗑️ Wipe All
-                    </button>
-                    <button 
                       onClick={() => { resetProductForm(); setIsProdModalOpen(true); }}
                       className="btn btn-primary"
                       style={{ display: 'flex', gap: '6px', alignItems: 'center' }}
@@ -694,7 +641,7 @@ export const Admin: React.FC = () => {
 
               {/* Tab 4: Coupon Manager tab */}
               {activeTab === 'coupons' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '30px', alignItems: 'start' }}>
+                <div className="admin-coupon-grid">
                   
                   {/* Coupon List */}
                   <div className="admin-content-card">
@@ -942,11 +889,10 @@ export const Admin: React.FC = () => {
                 </div>
                 
                 {prodOptions.map((opt, idx) => (
-                  <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '10px' }}>
+                  <div key={idx} className="option-variation-row">
                     <input
                       type="text"
-                      className="form-input"
-                      style={{ flex: 1 }}
+                      className="form-input size-input"
                       placeholder="Size (e.g. 500ml, 1 Liter)"
                       value={opt.size}
                       onChange={(e) => {
@@ -958,8 +904,7 @@ export const Admin: React.FC = () => {
                     />
                     <input
                       type="number"
-                      className="form-input"
-                      style={{ width: '100px' }}
+                      className="form-input price-input"
                       placeholder="Price (₹)"
                       value={opt.price}
                       min={1}
@@ -972,8 +917,7 @@ export const Admin: React.FC = () => {
                     />
                     <input
                       type="number"
-                      className="form-input"
-                      style={{ width: '90px' }}
+                      className="form-input stock-input"
                       placeholder="Stock"
                       value={opt.stock}
                       min={0}
@@ -988,6 +932,7 @@ export const Admin: React.FC = () => {
                       <button 
                         type="button"
                         onClick={() => setProdOptions(prodOptions.filter((_, i) => i !== idx))}
+                        className="remove-opt-btn"
                         style={{ color: 'var(--color-error)' }}
                         title="Remove option"
                       >

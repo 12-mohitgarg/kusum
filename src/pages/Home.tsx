@@ -204,7 +204,7 @@ export const Home: React.FC = () => {
       {/* Dynamic Hero Carousel Section (Kasutam Style Card Banner) */}
       <section className="hero-carousel-section" style={{ background: '#fdfaf5', padding: '40px 0 20px 0', overflow: 'hidden' }}>
         <div className="container">
-          <div className="hero-carousel-container" style={{ position: 'relative', height: '480px', borderRadius: '24px', overflow: 'hidden', boxShadow: 'var(--shadow-lg)' }}>
+          <div className="hero-carousel-container">
             {HERO_SLIDES.map((slide, idx) => (
               <div 
                 key={idx} 
@@ -213,22 +213,26 @@ export const Home: React.FC = () => {
                   display: activeSlide === idx ? 'block' : 'none',
                   width: '100%',
                   height: '100%',
-                  backgroundImage: `linear-gradient(to right, rgba(30, 63, 31, 0.88) 35%, rgba(30, 63, 31, 0.5) 65%, rgba(0,0,0,0.1) 100%), url('${slide.bg}')`,
+                  backgroundImage: `url('${slide.bg}')`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  animation: 'fadeIn 0.6s ease'
+                  animation: 'fadeIn 0.6s ease',
+                  position: 'relative'
                 }}
               >
-                <div style={{ padding: '60px 80px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '20px', maxWidth: '620px' }}>
+                {/* Dark Contrast Overlay */}
+                <div className="hero-slide-overlay" />
+
+                <div className="hero-slide-content-wrapper">
                   <span className="section-tag" style={{ textAlign: 'left', margin: 0, color: 'var(--color-accent)', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.85rem' }}>{slide.subtitle}</span>
                   
-                  <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '3.3rem', color: '#ffffff', lineHeight: 1.15, fontWeight: 700 }}>
-                    Every <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic', color: 'var(--color-accent)', textTransform: 'lowercase', fontWeight: 'normal' }}>jar</span> tells a story of <span style={{ display: 'block', fontSize: '3.5rem', marginTop: '6px' }}>{slide.title.replace('Experience Pure ', '').replace('Farm-Fresh ', '')}</span>
+                  <h1 className="hero-slide-title">
+                    Every <span className="hero-slide-title-italic">jar</span> tells a story of <span className="hero-slide-title-main">{slide.title.replace('Experience Pure ', '').replace('Farm-Fresh ', '')}</span>
                   </h1>
 
                   <div style={{ width: '120px', borderBottom: '3px dotted var(--color-accent)', margin: '2px 0 6px 0' }} />
                   
-                  <p style={{ fontSize: '1.02rem', color: '#ffffff', opacity: 0.95, lineHeight: 1.6, marginBottom: '10px' }}>
+                  <p className="hero-slide-text">
                     {slide.text}
                   </p>
 
@@ -645,20 +649,20 @@ export const Home: React.FC = () => {
             Get personalized Ghee dosage recommendations based on Ayurvedic principles, and search live laboratory tests for our current farm batches.
           </p>
 
-          <div className="dashboard-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '32px', marginTop: '40px' }}>
+          <div className="dashboard-grid">
             
             {/* Ayurvedic Ghee Calculator */}
-            <div className="dashboard-card glass" style={{ padding: '36px', borderRadius: '16px', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div className="dashboard-card glass">
               <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-primary)', fontSize: '1.5rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
                 🌿 Ghee Dosage Calculator
               </h3>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <div className="form-row-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="form-row-2">
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-main)' }}>Age Group</label>
                     <select 
-                      style={{ height: '40px', padding: '0 10px', border: '1px solid var(--color-border)', borderRadius: '6px', outline: 'none' }}
+                      style={{ width: '100%', maxWidth: '100%', height: '40px', padding: '0 10px', border: '1px solid var(--color-border)', borderRadius: '6px', outline: 'none' }}
                       value={calcAge} 
                       onChange={(e) => setCalcAge(e.target.value as any)}
                     >
@@ -671,7 +675,7 @@ export const Home: React.FC = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-main)' }}>Primary Health Goal</label>
                     <select 
-                      style={{ height: '40px', padding: '0 10px', border: '1px solid var(--color-border)', borderRadius: '6px', outline: 'none' }}
+                      style={{ width: '100%', maxWidth: '100%', height: '40px', padding: '0 10px', border: '1px solid var(--color-border)', borderRadius: '6px', outline: 'none' }}
                       value={calcGoal} 
                       onChange={(e) => setCalcGoal(e.target.value as any)}
                     >
@@ -686,7 +690,7 @@ export const Home: React.FC = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-main)' }}>Ayurvedic Body Type (Dosha)</label>
                   <select 
-                    style={{ height: '40px', padding: '0 10px', border: '1px solid var(--color-border)', borderRadius: '6px', outline: 'none' }}
+                    style={{ width: '100%', maxWidth: '100%', height: '40px', padding: '0 10px', border: '1px solid var(--color-border)', borderRadius: '6px', outline: 'none' }}
                     value={calcDosha} 
                     onChange={(e) => setCalcDosha(e.target.value as any)}
                   >
@@ -698,13 +702,13 @@ export const Home: React.FC = () => {
               </div>
 
               {/* Dynamic Result Panel */}
-              <div style={{ padding: '20px', backgroundColor: 'var(--color-bg-base)', borderLeft: '4px solid var(--color-accent)', borderRadius: '0 8px 8px 0', fontSize: '0.9rem', color: 'var(--color-text-main)', lineHeight: '1.6', whiteSpace: 'pre-line' }}>
+              <div style={{ padding: '20px', backgroundColor: 'var(--color-bg-base)', borderLeft: '4px solid var(--color-accent)', borderRadius: '0 8px 8px 0', fontSize: '0.9rem', color: 'var(--color-text-main)', lineHeight: '1.6', whiteSpace: 'pre-line', wordBreak: 'break-word' }}>
                 {calcResult}
               </div>
             </div>
 
             {/* Lab Purity Batch Tracker */}
-            <div className="dashboard-card glass" style={{ padding: '36px', borderRadius: '16px', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div className="dashboard-card glass">
               <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-primary)', fontSize: '1.5rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
                 🔬 Lab Report & Batch Lookup
               </h3>
@@ -712,7 +716,7 @@ export const Home: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text-main)' }}>Select Farm Batch Code</label>
                 <select 
-                  style={{ height: '40px', padding: '0 10px', border: '1px solid var(--color-border)', borderRadius: '6px', outline: 'none', width: '100%' }}
+                  style={{ height: '40px', padding: '0 10px', border: '1px solid var(--color-border)', borderRadius: '6px', outline: 'none', width: '100%', maxWidth: '100%' }}
                   value={selectedBatch} 
                   onChange={(e) => setSelectedBatch(e.target.value)}
                 >
@@ -860,7 +864,7 @@ export const Home: React.FC = () => {
                 Send a Bulk Inquiry
               </h3>
               <form onSubmit={handleBulkSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div className="form-row-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="form-row-2">
                   <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <label className="form-label" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--color-text-main)' }}>Full Name *</label>
                     <input 
@@ -887,7 +891,7 @@ export const Home: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="form-row-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="form-row-2">
                   <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <label className="form-label" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--color-text-main)' }}>Select Product Category *</label>
                     <select 
@@ -1010,50 +1014,16 @@ export const Home: React.FC = () => {
         className="floating-gift-btn animate-bounce"
         onClick={() => setIsPromoOpen(true)}
         aria-label="Claim discount coupon"
-        style={{
-          position: 'fixed',
-          bottom: '30px',
-          right: '30px',
-          backgroundColor: 'var(--color-primary)',
-          color: 'var(--color-accent)',
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          boxShadow: 'var(--shadow-lg)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '24px',
-          zIndex: 99,
-          border: '2px solid var(--color-accent)',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease'
-        }}
       >
         🎁
       </button>
 
       {/* Slide-in Promo Coupon Drawer */}
       {isPromoOpen && (
-        <div 
-          className="promo-drawer glass" 
-          style={{
-            position: 'fixed',
-            bottom: '100px',
-            right: '30px',
-            width: '320px',
-            backgroundColor: '#ffffff',
-            borderRadius: '16px',
-            border: '1px solid var(--color-border)',
-            boxShadow: 'var(--shadow-lg)',
-            padding: '24px',
-            zIndex: 999,
-            animation: 'fadeIn 0.4s ease'
-          }}
-        >
+        <div className="promo-drawer glass">
           <button 
             onClick={dismissPromo}
-            style={{ position: 'absolute', top: '12px', right: '12px', fontSize: '18px', color: 'var(--color-text-muted)', fontWeight: 'bold', cursor: 'pointer' }}
+            className="promo-drawer-close"
           >
             ✕
           </button>

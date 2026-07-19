@@ -332,19 +332,8 @@ export const ProductDetail: React.FC = () => {
                   });
 
                   return (
-                    <div className="rating-distribution-card" style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 2fr',
-                      gap: '30px',
-                      backgroundColor: '#ffffff',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: '16px',
-                      padding: '28px',
-                      marginBottom: '36px',
-                      alignItems: 'center',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
-                    }}>
-                      <div style={{ textAlign: 'center', borderRight: '1px solid var(--color-border)', paddingRight: '20px' }}>
+                    <div className="rating-distribution-card">
+                      <div className="rating-distribution-summary">
                         <div style={{ fontSize: '3.2rem', fontWeight: 700, color: 'var(--color-primary)', lineHeight: '1' }}>{product.rating}</div>
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '3px', margin: '12px 0 6px', color: '#ffb100' }}>
                           {Array.from({ length: 5 }).map((_, i) => (

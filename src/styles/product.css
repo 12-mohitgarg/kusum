@@ -370,3 +370,51 @@
     gap: 36px;
   }
 }
+
+.rating-distribution-card {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 36px;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.rating-distribution-summary {
+  text-align: center;
+  border-right: 1px solid var(--color-border);
+  padding-right: 20px;
+}
+
+@media (max-width: 600px) {
+  .rating-distribution-card {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 20px;
+  }
+  .rating-distribution-summary {
+    border-right: none;
+    padding-right: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 20px;
+  }
+  .form-group-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .purchase-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .quantity-adjuster {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .quantity-btn-large {
+    flex: 1;
+  }
+}

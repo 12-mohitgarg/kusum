@@ -92,25 +92,6 @@ const AppContent: React.FC<{
           target="_blank" 
           rel="noopener noreferrer"
           className="floating-whatsapp-widget animate-bounce"
-          style={{
-            position: 'fixed',
-            bottom: '30px',
-            right: '110px',
-            backgroundColor: '#25D366',
-            color: '#ffffff',
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            boxShadow: 'var(--shadow-lg)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '32px',
-            zIndex: 9999,
-            cursor: 'pointer',
-            border: '2px solid #ffffff',
-            textDecoration: 'none'
-          }}
           title="Chat on WhatsApp"
         >
           <svg viewBox="0 0 24 24" style={{ width: '32px', height: '32px', fill: 'currentColor' }}>

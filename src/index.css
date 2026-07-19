@@ -48,12 +48,13 @@
   padding: 0;
 }
 
-body {
+html, body {
   font-family: var(--font-sans);
   background-color: var(--color-bg-base);
   color: var(--color-text-main);
   line-height: 1.6;
   overflow-x: hidden;
+  max-width: 100%;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -141,6 +142,12 @@ h1, h2, h3, h4, h5, h6 {
   gap: 24px;
 }
 
+.form-row-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
 @media (max-width: 992px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
@@ -148,9 +155,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 600px) {
-  .grid-4 { grid-template-columns: 1fr; }
-  .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .grid-2 { grid-template-columns: 1fr; }
+  .form-row-2 { grid-template-columns: 1fr; }
   .container { padding: 0 16px; }
 }
 
@@ -273,4 +281,38 @@ h1, h2, h3, h4, h5, h6 {
 .badge-green {
   background-color: rgba(45, 122, 49, 0.1);
   color: var(--color-success);
+}
+
+/* Responsive Floating WhatsApp Widget */
+.floating-whatsapp-widget {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #25D366;
+  color: #ffffff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  text-decoration: none;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.floating-whatsapp-widget:hover {
+  transform: scale(1.08);
+}
+
+@media (max-width: 768px) {
+  .floating-whatsapp-widget {
+    bottom: 20px;
+    right: 20px;
+    width: 52px;
+    height: 52px;
+  }
 }

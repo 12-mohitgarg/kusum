@@ -541,8 +541,11 @@ export const getOrdersByUser = async (email: string): Promise<Order[]> => {
 };
 
 export const placeOrder = async (orderData: Omit<Order, 'id' | 'createdAt' | 'status'>): Promise<Order> => {
+  // Strip undefined values to prevent Firestore setDoc crashes
+  const cleanOrderData = JSON.parse(JSON.stringify(orderData));
+
   const newOrder: Order = {
-    ...orderData,
+    ...cleanOrderData,
     id: 'KSM-' + Math.floor(100000 + Math.random() * 900000),
     status: 'processing',
     createdAt: new Date().toISOString()

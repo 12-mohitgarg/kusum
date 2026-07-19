@@ -131,25 +131,7 @@ export const AdminLogin: React.FC = () => {
           </button>
         </div>
 
-        {/* Demo Mode Alert Banner - only show for login */}
-        {!isRegister && (
-          <div style={{
-            backgroundColor: 'var(--color-bg-secondary)',
-            border: '1px solid var(--color-accent)',
-            borderRadius: '8px',
-            padding: '16px',
-            marginBottom: '28px',
-            fontSize: '0.82rem',
-            lineHeight: '1.5',
-            color: 'var(--color-primary-dark)'
-          }}>
-            <strong>🌾 Demonstration Access:</strong>
-            <div style={{ marginTop: '6px' }}>
-              <strong>Email:</strong> admin@amritbhoomi.com<br />
-              <strong>Password:</strong> admin
-            </div>
-          </div>
-        )}
+
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {isRegister && (
